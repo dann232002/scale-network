@@ -61,7 +61,7 @@ def test_getfilelinesbldg():
             "//200-498 are dynamically generated from Booth information file as Vendor VLANs.\n",
             "//The difference is that these VLAN interfaces will also be built with firewall filters to prevent access to other\n",
             "//VLANs (vendor_vlan <-> internet only)\n",
-            "VVRNG\tvendor_vlan_\t\t200-201\t2001:470:f325:200::/54\t10.2.0.0/15\tDynamically allocated and named booth VLANs\n",
+            "VVRNG\tvendor_vlan_\t\t200-201\t2001:470:f325::/48\t10.2.0.0/15\tDynamically allocated and named booth VLANs\n",
             "//499 is reserved for the Vendor backbone VLAN between the Expo switches and the routers.\n",
         ]]
     ]
@@ -76,13 +76,13 @@ def test_dhcp6ranges():
     cases = [
         [["2001:470:f325:504::", 64], [
             "2001:470:f325:504:1::1",
-            "2001:470:f325:504:2::400",
+            "2001:470:f325:504:1::800",
         ]],
         [["2001:470:f325:111::", 64], [
             "2001:470:f325:111:1::1",
-            "2001:470:f325:111:2::400"
+            "2001:470:f325:111:1::800"
         ]],
-        [["::", 0], ["", "", "", ""]]
+        [["::", 0], ["", ""]]
     ]
     for case, ranges in cases:
         prefix, bitmask = case
@@ -123,7 +123,7 @@ def test_makevlan():
             "building": "Conference",
             "description": "Capture the Flag",
             "ipv6dhcpStart": "2001:470:f325:504:1::1",
-            "ipv6dhcpEnd": "2001:470:f325:504:2::400",
+            "ipv6dhcpEnd": "2001:470:f325:504:1::800",
             "ipv4dhcpStart": "10.128.4.80",
             "ipv4dhcpEnd": "10.128.4.254",
             "ipv4router": "10.128.4.1",
@@ -160,7 +160,7 @@ def test_bitmasktonetmask():
 def test_genvlans():
     '''test cases for the genvlans() function'''
     cases = [
-        ["VVRNG\ttest_vlan_\t\t200-201\t2001:470:f325:200::/54\t10.2.0.0/15\tdynamic vlan", [
+        ["VVRNG\ttest_vlan_\t\t200-201\t2001:470:f325::/48\t10.2.0.0/15\tdynamic vlan", [
             {
                 "name": "test_vlan_200",
                 "id": 200,
@@ -171,7 +171,7 @@ def test_genvlans():
                 "building": "Expo",
                 "description": "Dyanmic vlan 200",
                 "ipv6dhcpStart": "2001:470:f325:200:1::1",
-                "ipv6dhcpEnd": "2001:470:f325:200:2::400",
+                "ipv6dhcpEnd": "2001:470:f325:200:1::800",
                 "ipv4dhcpStart": "10.2.0.80",
                 "ipv4dhcpEnd": "10.2.0.254",
                 "ipv4router": "10.2.0.1",
@@ -191,7 +191,7 @@ def test_genvlans():
                 "building": "Expo",
                 "description": "Dyanmic vlan 201",
                 "ipv6dhcpStart": "2001:470:f325:201:1::1",
-                "ipv6dhcpEnd": "2001:470:f325:201:2::400",
+                "ipv6dhcpEnd": "2001:470:f325:201:1::800",
                 "ipv4dhcpStart": "10.2.1.80",
                 "ipv4dhcpEnd": "10.2.1.254",
                 "ipv4router": "10.2.1.1",
@@ -271,7 +271,7 @@ def test_populatevlans():
                 "building": "Expo",
                 "description": "2.4G Wireless Network in Expo Center",
                 "ipv6dhcpStart": "2001:470:f325:100:1::1",
-                "ipv6dhcpEnd": "2001:470:f325:100:2::400",
+                "ipv6dhcpEnd": "2001:470:f325:100:1::800",
                 "ipv4dhcpStart": "10.0.128.80",
                 "ipv4dhcpEnd": "10.0.135.254",
                 "ipv4router": "10.0.128.1",
@@ -291,7 +291,7 @@ def test_populatevlans():
                 "building": "Expo",
                 "description": "Dyanmic vlan 200",
                 "ipv6dhcpStart": "2001:470:f325:200:1::1",
-                "ipv6dhcpEnd": "2001:470:f325:200:2::400",
+                "ipv6dhcpEnd": "2001:470:f325:200:1::800",
                 "ipv4dhcpStart": "10.2.0.80",
                 "ipv4dhcpEnd": "10.2.0.254",
                 "ipv4router": "10.2.0.1",
@@ -311,7 +311,7 @@ def test_populatevlans():
                 "building": "Expo",
                 "description": "Dyanmic vlan 201",
                 "ipv6dhcpStart": "2001:470:f325:201:1::1",
-                "ipv6dhcpEnd": "2001:470:f325:201:2::400",
+                "ipv6dhcpEnd": "2001:470:f325:201:1::800",
                 "ipv4dhcpStart": "10.2.1.80",
                 "ipv4dhcpEnd": "10.2.1.254",
                 "ipv4router": "10.2.1.1",
@@ -331,7 +331,7 @@ def test_populatevlans():
                 "building": "Conference",
                 "description": "2.4G Wireless Network in Conference Center",
                 "ipv6dhcpStart": "2001:470:f325:500:1::1",
-                "ipv6dhcpEnd": "2001:470:f325:500:2::400",
+                "ipv6dhcpEnd": "2001:470:f325:500:1::800",
                 "ipv4dhcpStart": "10.128.128.80",
                 "ipv4dhcpEnd": "10.128.135.254",
                 "ipv4router": "10.128.128.1",
@@ -351,7 +351,7 @@ def test_populatevlans():
                 "building": "Conference",
                 "description": "Signs network (Conference Center) IPv6 Only",
                 "ipv6dhcpStart": "2001:470:f325:507:1::1",
-                "ipv6dhcpEnd": "2001:470:f325:507:2::400",
+                "ipv6dhcpEnd": "2001:470:f325:507:1::800",
                 "ipv4dhcpStart": "",
                 "ipv4dhcpEnd": "",
                 "ipv4router": "",
