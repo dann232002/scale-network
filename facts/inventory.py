@@ -590,6 +590,12 @@ def generatekeaconfig(servers, aps, vlans, outputdir):
                 subnet["valid-lifetime"] = 300
                 subnet["min-valid-lifetime"] = 300
                 subnet["max-valid-lifetime"] = 300
+                # This is only required for the subnets that will allocate dhcpv6 addresses without a relay
+                # in our case this is only ever the cf* vlan since thats where the VMs nic will be bridge to
+                # TODO: we should figure out a better way of dynamically allocating this config of the
+                # interface so is not hardcoded
+                # https://kea.readthedocs.io/en/kea-2.2.0/arm/dhcp6-srv.html#ipv6-subnet-selection
+                subnet["interface"] = "eth0"
             subnets6_dict.append(subnet)
 
     keav6_config["Dhcp6"]["subnet6"] = subnets6_dict
