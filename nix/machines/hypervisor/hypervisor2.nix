@@ -10,7 +10,18 @@
     # use systemd.networkd
     useNetworkd = true;
     useDHCP = false;
-    firewall.enable = true;
+
+    # Needed for supporting nat
+    firewall = {
+      enable = true;
+      extraCommands = lib.mkMerge [ (lib.mkAfter ''
+        iptables -w -t nat -A nixos-nat-post -s 10.0.3.0/24 -o eno1 -j MASQUERADE
+      '') ];
+    };
+    # Set this to control sysctl: net.ipv4.ip_forward and net.ipv6.conf.all.forwarding
+    # instead in systemd.network via IPForward on any interface
+    # https://www.freedesktop.org/software/systemd/man/latest/systemd.network.html#IPForward=
+    nat.enable = true;
   };
 
   systemd.network = {
@@ -25,8 +36,8 @@
         matchConfig.Name = "virbr0";
         enable = true;
         #networkConfig.DHCP = "yes";
-        address = [ "10.0.3.20/24" "2001:470:f026:103::20/64" ];
-        gateway = [ "10.0.3.20" ];
+        address = [ "10.0.3.1/24" "10.0.3.20/24" "2001:470:f026:103::20/64" ];
+        #gateway = [ "10.0.3.1" ];
         #[Route]
         #Gateway=192.168.0.10
         #Destination=10.0.0.0/8
@@ -44,7 +55,10 @@
       "10-lan" = {
         matchConfig.Name = "eno1";
         enable = true;
-        networkConfig.DHCP = "yes";
+        networkConfig = {
+          DHCP = "yes";
+          IPMasquerade = "both";
+        };
       };
     };
   };
