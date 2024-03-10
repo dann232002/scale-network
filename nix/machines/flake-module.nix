@@ -27,6 +27,20 @@ in
           ./bootstrap
         ];
       };
+      routerImage = lib.nixosSystem {
+        inherit system;
+        modules = [
+          ({ modulesPath, ... }: {
+            imports = [
+              "${ toString modulesPath}/installer/cd-dvd/installation-cd-minimal.nix"
+            ];
+          })
+          ./_common/base.nix
+          ./_common/users.nix
+          ./router.nix
+        ];
+      };
+
       devServer = lib.nixosSystem {
         system = "x86_64-linux";
         modules = [
